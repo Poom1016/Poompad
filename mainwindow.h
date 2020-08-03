@@ -10,6 +10,9 @@
 #include <QPrintDialog>
 #include <QFontComboBox>
 #include <QStatusBar>
+#include <QInputDialog>
+#include <QTextDocument>
+#include <regex>
 
 
 QT_BEGIN_NAMESPACE
@@ -57,8 +60,17 @@ private slots:
 
     void on_actionAbout_Poom_Pad_triggered();
 
+    void on_actionFind_triggered();
+
+    void on_actionFind_Previous_triggered();
+
+    void on_actionFind_Next_triggered();
+
+    void on_actionReplace_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString CurrentFile = nullptr;
+    QString FindText = nullptr;
 };
 #endif // MAINWINDOW_H

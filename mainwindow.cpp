@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->setCentralWidget(ui->textEdit);
+
 }
 
 MainWindow::~MainWindow()
@@ -138,4 +139,57 @@ void MainWindow::on_actionAbout_Poom_Pad_triggered()
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.exec();
+}
+
+void MainWindow::on_actionFind_triggered()
+{
+    bool Ok;
+    FindText = "";
+    FindText = QInputDialog::getText(this, tr("Find"),
+                                             tr("Find text:"), QLineEdit::Normal,
+                                             QDir::home().dirName(), &Ok);
+
+    ui->textEdit->find(FindText);
+
+}
+
+void MainWindow::on_actionFind_Previous_triggered()
+{
+
+    ui->textEdit->find(FindText, QTextDocument::FindBackward | QTextDocument::FindCaseSensitively);
+
+}
+
+void MainWindow::on_actionFind_Next_triggered()
+{
+    ui->textEdit->find(FindText);
+}
+
+void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+    if(from.empty())
+        return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length();
+    }
+}
+
+void MainWindow::on_actionReplace_triggered()
+{
+    bool Ok;
+    QString ReplaceText = "";
+    std::string utf8_text2 = FindText.toUtf8().constData();
+    utf8_text2 = utf8_text2 + " to: ";
+    ReplaceText = QInputDialog::getText(this, tr("Replace"),
+                                             tr("Replace ",utf8_text2.c_str()), QLineEdit::Normal,
+                                             QDir::home().dirName(), &Ok);
+    QString Text = ui->textEdit->toPlainText();
+    std::string utf8_text = Text.toUtf8().constData();
+    std::string utf8_text3 = FindText.toUtf8().constData();
+    std::string utf8_text4 = ReplaceText.toUtf8().constData();
+
+    utf8_text = std::regex_replace(utf8_text, std::regex(utf8_text3),utf8_text4);
+    QString ReplacedText =  QString::fromStdString(utf8_text);
+    ui->textEdit->setText(ReplacedText);
 }
